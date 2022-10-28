@@ -1,0 +1,53 @@
+version: '3.1'
+
+services:
+  # NodeJS Service
+  monannonce-node:
+    container_name:  "monannonce-API-nodejs"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: 'node ace serve --watch'
+    depends_on:
+#      - 'monannonce_postgresql'
+       - 'monannonce-mailhog'
+    links:
+#      - "monannonce_postgresql:monannonce_postgresql"
+       - 'monannonce-mailhog:mailhog'
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - './:/home/app:rw'
+    ports:
+      - "8082:3333"
+    networks:
+      - default
+    expose:
+      - "8082"
+    working_dir: '/home/app/monannonce'
+  monannonce-adminer:
+    image: adminer
+    restart: always
+#    links:
+#      - "monannonce_postgresql:db"
+#    depends_on:
+#      - monannonce_postgresql
+    ports:
+      - 8080:8080
+  monannonce-mailhog:
+    image: mailhog/mailhog
+    ports: 
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
+  monannonce_postgresql:
+    image: 'postgres:10.4'
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=hackathon
+      - POSTGRES_USER=adonis
+      - POSTGRES_PASSWORD=adonis
