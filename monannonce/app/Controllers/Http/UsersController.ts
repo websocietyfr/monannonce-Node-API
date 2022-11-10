@@ -89,7 +89,7 @@ export default class UsersController {
 
     async update({auth, params,request,response}) {
         const userId = params.id;
-        if (auth.user.id !== userId){
+        if (auth.user.id !== Number(userId)){
             return response.status(403).json({
                 error: 'This is not you...'
             });
