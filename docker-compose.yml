@@ -19,11 +19,11 @@ services:
     volumes:
       - './:/home/app:rw'
     ports:
-      - "8082:3333"
+      - "3333:3333"
     networks:
       - default
     expose:
-      - "8082"
+      - "3333"
     working_dir: '/home/app/monannonce'
   monannonce-mailhog:
     image: mailhog/mailhog
